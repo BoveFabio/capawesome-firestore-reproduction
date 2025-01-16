@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">capawesome-firestore-reproduction</string>
+    <string name="title_activity_main">capawesome-firestore-reproduction</string>
+    <string name="package_name">com.reproduction.capawesomefirestore</string>
+    <string name="custom_url_scheme">com.reproduction.capawesomefirestore</string>
+</resources>
