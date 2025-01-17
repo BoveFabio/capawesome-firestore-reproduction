@@ -1,10 +1,9 @@
 import {useEffect, useRef, useState} from "react";
 import {FirebaseFirestore} from "@capacitor-firebase/firestore";
 
-export function IOSDataFetchingComponent(props: { condition: string }) {
-    const callbackId = useRef<string>();
+export function IOSDataFetchingComponent(props: { condition: string | number }) {
+    const callbackIds = useRef<Set<string>>(new Set<string>());
     const [count, setCount] = useState(0);
-    const [reload, setReload] = useState(0);
 
     useEffect(() => {
         FirebaseFirestore.addCollectionSnapshotListener({
@@ -16,24 +15,26 @@ export function IOSDataFetchingComponent(props: { condition: string }) {
                         type: "where",
                         fieldPath: "testProperty",
                         opStr: "==",
-                        value: props.condition
+                        value: "A"
                     }
                 ]
             }
         }, snapshot => {
             setCount(snapshot?.snapshots?.length ?? 0);
         }).then(listenerId => {
-            callbackId.current = listenerId;
+            callbackIds.current.add(listenerId);
         })
 
         return () => {
-            if (callbackId.current) {
+            for (const id of callbackIds.current) {
                 FirebaseFirestore.removeSnapshotListener({
-                    callbackId: callbackId.current,
+                    callbackId: id,
+                }).then(() => {
+                    callbackIds.current.delete(id);
                 })
             }
         }
-    }, [props.condition, reload]);
+    }, [props.condition]);
 
-    return <div><span>{props.condition}:</span><span>{count}</span><button onClick={() => setReload(prev => prev+1)}>Reload</button></div>
+    return <div><span>{props.condition}:</span><span>{count}</span></div>
 }
