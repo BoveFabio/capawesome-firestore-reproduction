@@ -1,50 +1,16 @@
-# React + TypeScript + Vite
+# Bug reproduction Repo
+When setting up (multiple) snapshot listeners the iOS app crashes randomly with varying errors.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This reproduction application has been created through `npm create vite@latest my-app --template react` and then adding
+`@capacitor/core`, `@capacitor/cli`, `@capacitor-firebase/firestore`, and `@capacitor-firebase/firestore`.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+To reproduce the error:
+1. `npm i`
+2. `npm run build`
+3. Replace `[your local IP]` inside the `capacitor.config.ts`
+4. `npx cap sync`
+5. Add firebase config as described in the docs: https://github.com/capawesome-team/capacitor-firebase/blob/main/docs/firebase-setup.md#ios
+6. `npm run dev -- --host`
+7. Start the app on any emulator or real device
+8. Play arount wit `numberOfSnapshotListeners` in `App.tsx`
+9. Observe the error in XCode (file `@capacitor-firebase/firestore/ios/Plugin/FirebaseFirestore.swift`, e.g. ![img.png](img.png))
